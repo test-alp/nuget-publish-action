@@ -44,6 +44,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./output/NugetPublishAction.exe
+          asset_path: ./output/NugetPublishAction
           asset_name: NugetPublishAction-${VERSION}-macOS-arm64
           asset_content_type: application/octet-stream
