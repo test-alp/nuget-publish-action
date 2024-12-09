@@ -30,6 +30,9 @@ jobs:
       - name: Publish macOS ARM64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime osx-arm64 --self-contained true --output ./output/mac-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
+      - name: Publish macOS x64
+        run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime osx-x64 --self-contained true --output ./output/mac-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+
       - name: Publish Windows x64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
         
@@ -71,6 +74,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./output/mac-arm64/NugetPublishAction
           asset_name: NugetPublishAction.${{env.VERSION}}.macOS-arm64
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload macOS x64
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./output/mac-x64/NugetPublishAction
+          asset_name: NugetPublishAction.${{env.VERSION}}.macOS-x64
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
