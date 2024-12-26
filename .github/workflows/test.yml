@@ -23,6 +23,21 @@ jobs:
           cd homebrew-repo
           echo "New content for the file" > file-to-modify.txt
 
+      - name: status 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          cd homebrew-repo
+          git remote -v
+          git status
+
+      - name: status 2
+        env:
+          GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          git remote -v
+          git status
+
       - name: Commit and push changes
         env:
           GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
@@ -35,4 +50,4 @@ jobs:
           git add file-to-modify.txt
           git commit -m "Update file-to-modify.txt via GitHub Actions"
           git status
-          git push main
+          git push origin/main
