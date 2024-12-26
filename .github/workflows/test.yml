@@ -27,6 +27,8 @@ jobs:
       - name: Modify file
         run: |
           cd homebrew-repo
+          curl -o NugetPublishAction.pkg https://www.nuget.org/api/v2/package/NugetPublishAction/0.0.16
+          sha256=$(sha256sum NugetPublishAction.pkg | awk '{print $1}')
           sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
 
       - name: Commit and push changes
