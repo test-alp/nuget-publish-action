@@ -7,6 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: sha256 calculation
+        run: |
+          curl -o NugetPublishAction.pkg https://www.nuget.org/api/v2/package/NugetPublishAction/0.0.16
+          sha256=$(sha256sum NugetPublishAction.pkg | awk '{print $1}')
+          echo $sha256
+          
       - name: Checkout
         uses: actions/checkout@v4
 
