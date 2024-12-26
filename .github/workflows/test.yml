@@ -27,8 +27,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
         run: |
           cd homebrew-repo
+          git remote -v
+          git status
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add file-to-modify.txt
           git commit -m "Update file-to-modify.txt via GitHub Actions"
+          git status
           git push main
