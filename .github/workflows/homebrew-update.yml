@@ -30,6 +30,7 @@ jobs:
           echo $version
           curl -o NugetPublishAction.nupkg https://nuget.org/api/v2/package/NugetPublishAction/$version
           sha256=$(sha256sum NugetPublishAction.nupkg | awk '{print $1}')
+          echo $sha256
           cd homebrew-repo
           sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
           sed -i 's|^\(\s*url\s*"\)[^"]*"|\1https://nuget.org/api/v2/package/NugetPublishAction/$version"|' nuget-publish-action.rb
