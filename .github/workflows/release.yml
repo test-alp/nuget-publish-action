@@ -27,7 +27,7 @@ jobs:
       - name: Push
         run: dotnet nuget push ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
-      - name: Checkout HomeBrew Repository
+      - name: Checkout Homebrew Repository
         uses: actions/checkout@v4
         with:
           repository: test-alp/homebrew-nuget-publish-action
@@ -35,12 +35,17 @@ jobs:
           token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
           path: homebrew-repo
           
-      - name: sha256 calculation
+      - name: Homebrew Formula Update
         run: |
-          sha256=$(sha256sum ./output/nupkg/NugetPublishAction.pkg | awk '{print $1}')
           cd homebrew-repo
-          echo $sha256
+          sha256=$(sha256sum ./output/nupkg/NugetPublishAction.${{env.VERSION}}.pkg | awk '{print $1}')
           sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add nuget-publish-action.rb
+          git commit -m "Update ${{env.VERSION}} via GitHub Actions"
+          git status
+          git push -u origin main
 
       - name: Publish Windows x64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
@@ -74,26 +79,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg
           asset_name: NugetPublishAction.${{env.VERSION}}.nupkg
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Upload macOS arm64
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./output/mac-arm64/NugetPublishAction
-          asset_name: NugetPublishAction.${{env.VERSION}}.macOS-arm64
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Upload macOS x64
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./output/mac-x64/NugetPublishAction
-          asset_name: NugetPublishAction.${{env.VERSION}}.macOS-x64
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
