@@ -4,14 +4,13 @@ on:
       - Release
     types:
       - completed
-  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-#      - name: Wait for 10 minutes
-#        run: sleep 600
+      - name: Wait for 10 minutes
+        run: sleep 600
       
       - name: Checkout Homebrew Repository
         uses: actions/checkout@v4
