@@ -1,0 +1,34 @@
+name: Update Another Repo's File
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout homebrew Repository
+        uses: actions/checkout@v4
+        with:
+          repository: test-alp/homebrew-nuget-publish-action
+          token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+          path: homebrew-repo
+
+      - name: Modify file
+        run: |
+          cd homebrew-repo
+          echo "New content for the file" > file-to-modify.txt
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          cd homebrew-repo
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add file-to-modify.txt
+          git commit -m "Update file-to-modify.txt via GitHub Actions"
+          git push main
