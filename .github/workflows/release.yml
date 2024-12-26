@@ -8,7 +8,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v1
@@ -22,10 +22,25 @@ jobs:
         run: dotnet build --configuration Release /p:Version=${VERSION}
         
       - name: Pack
-        run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+        run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./output/nupkg
         
       - name: Push
-        run: dotnet nuget push *.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push ./output/nupkg/NugetPublishAction.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Checkout HomeBrew Repository
+        uses: actions/checkout@v4
+        with:
+          repository: test-alp/homebrew-nuget-publish-action
+          ref: main
+          token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+          path: homebrew-repo
+          
+      - name: sha256 calculation
+        run: |
+          sha256=$(sha256sum ./output/nupkg/NugetPublishAction.pkg | awk '{print $1}')
+          cd homebrew-repo
+          echo $sha256
+          sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
 
       - name: Publish Windows x64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
@@ -48,7 +63,8 @@ jobs:
           draft: false
           prerelease: false
           body: |
-            https://www.nuget.org/packages/NugetPublishAction/${{env.VERSION}}
+            https://nuget.org/packages/NugetPublishAction/${{env.VERSION}}
+            For macOS release refer https://github.com/test-alp/homebrew-nuget-publish-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,7 +72,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./NugetPublishAction.${{env.VERSION}}.nupkg
+          asset_path: ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg
           asset_name: NugetPublishAction.${{env.VERSION}}.nupkg
           asset_content_type: application/octet-stream
         env:
