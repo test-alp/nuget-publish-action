@@ -25,7 +25,7 @@ jobs:
         run: |
           version=$(curl https://api.nuget.org/v3-flatcontainer/nugetpublishaction/index.json | jq -r '.versions | last')
           echo $version
-          curl -o NugetPublishAction.nupkg curl https://api.nuget.org/v3-flatcontainer/nugetpublishaction/$version/nugetpublishaction.$version.nupkg
+          curl -o NugetPublishAction.nupkg https://api.nuget.org/v3-flatcontainer/nugetpublishaction/$version/nugetpublishaction.$version.nupkg
           sha256=$(sha256sum NugetPublishAction.nupkg | awk '{print $1}')
           echo $sha256
           cd homebrew-repo
