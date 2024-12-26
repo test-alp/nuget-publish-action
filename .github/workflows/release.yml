@@ -37,8 +37,8 @@ jobs:
           
       - name: Homebrew Formula Update
         run: |
-          cd homebrew-repo
           sha256=$(sha256sum ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg | awk '{print $1}')
+          cd homebrew-repo
           sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
