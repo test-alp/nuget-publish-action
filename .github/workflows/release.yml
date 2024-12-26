@@ -25,7 +25,7 @@ jobs:
         run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./output/nupkg
         
       - name: Push
-        run: dotnet nuget push ./output/nupkg/NugetPublishAction.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: Checkout HomeBrew Repository
         uses: actions/checkout@v4
