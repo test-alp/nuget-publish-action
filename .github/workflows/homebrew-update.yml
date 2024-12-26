@@ -1,36 +1,43 @@
-name: Release
 on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout
+      - name: Wait for 10 minutes
+        run: sleep 600
+      
+      - name: Checkout Homebrew Repository
         uses: actions/checkout@v4
-        
-      - name: Setup .NET 8.0
-        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 8.0.x
-          
-      - name: Set VERSION variable from tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-        
-      - name: Build
-        run: dotnet build --configuration Release /p:Version=${VERSION}
-        
-      - name: Pack
-        run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./output/nupkg/
-        
-      - name: Push
-        run: dotnet nuget push ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          repository: test-alp/homebrew-nuget-publish-action
+          ref: main
+          token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+          path: homebrew-repo
+
+      - name: Homebrew Formula Update
+        run: |
+          version=$(curl https://api.nuget.org/v3-flatcontainer/nugetpublishaction/index.json | jq -r '.versions | last')
+          curl -o NugetPublishAction.nupkg https://nuget.org/api/v2/package/NugetPublishAction/$version
+          sha256=$(sha256sum NugetPublishAction.nupkg | awk '{print $1}')
+          cd homebrew-repo
+          sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
+          sed -i 's|^\(\s*url\s*"\)[^"]*"|\1https://nuget.org/api/v2/package/NugetPublishAction/$version"|' nuget-publish-action.rb
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add nuget-publish-action.rb
+          git commit -m "Update $version via GitHub Actions"
+          git status
+          git push -u origin main
 
       - name: Publish Windows x64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
-        
+
       - name: Publish Windows ARM64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime win-arm64 --self-contained true --output ./output/win-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
@@ -39,7 +46,7 @@ jobs:
 
       - name: Publish Linux arm64
         run: dotnet publish NugetPublishAction.csproj --configuration Release --runtime linux-arm64 --self-contained true --output ./output/linux-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
-        
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -83,7 +90,7 @@ jobs:
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Upload Linux x64
         uses: actions/upload-release-asset@v1
         with:
