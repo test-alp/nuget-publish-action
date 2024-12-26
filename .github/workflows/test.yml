@@ -36,6 +36,7 @@ jobs:
           cd homebrew-repo
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
+          git add nuget-publish-action.rb
           git commit -m "Update file-to-modify.txt via GitHub Actions"
           git status
           git push -u origin main
