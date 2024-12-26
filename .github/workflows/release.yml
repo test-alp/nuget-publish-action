@@ -40,10 +40,11 @@ jobs:
           sha256=$(sha256sum ./output/nupkg/NugetPublishAction.${{env.VERSION}}.nupkg | awk '{print $1}')
           cd homebrew-repo
           sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" nuget-publish-action.rb
+          sed -i 's|^\(\s*url\s*"\)[^"]*"|\1https://nuget.org/api/v2/package/NugetPublishAction/${{env.VERSION}}"|' nuget-publish-action.rb
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add nuget-publish-action.rb
-          git commit -m "Update ${{env.VERSION}} via GitHub Actions"
+          git commit -m "Update v${{env.VERSION}} via GitHub Actions"
           git status
           git push -u origin main
 
