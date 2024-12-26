@@ -27,6 +27,7 @@ jobs:
       - name: Homebrew Formula Update
         run: |
           version=$(curl https://api.nuget.org/v3-flatcontainer/nugetpublishaction/index.json | jq -r '.versions | last')
+          echo $version
           curl -o NugetPublishAction.nupkg https://nuget.org/api/v2/package/NugetPublishAction/$version
           sha256=$(sha256sum NugetPublishAction.nupkg | awk '{print $1}')
           cd homebrew-repo
