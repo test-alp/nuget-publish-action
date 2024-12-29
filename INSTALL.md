@@ -6,7 +6,7 @@ This application can run on macOS, Windows & Linux for Arm64, x64, x86 architect
 
 You can install by Homebrew (preferred) or as .NET tool.
 
-#### 1. Homebrew tap configuration & package installation
+#### Homebrew tap configuration & package installation
 ```shell
 brew tap photo-cli/homebrew-photo-cli && brew install photo-cli
 ```
