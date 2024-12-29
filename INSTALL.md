@@ -21,9 +21,32 @@ You can install by [.net tool](#install-as-net-tool) (preferred) or standalone e
 
 # Install as .NET tool
 
-.NET tool can be installed by .net cli (preferred) and could be downloaded manually from https://nuget.org/packages/NugetPublishAction/${{env.VERSION}} or directly from assets.
+.NET tool can be installed by .net cli (preferred), could be downloaded manually from https://nuget.org/packages/NugetPublishAction/${{env.VERSION}} or directly from assets.
 
 .NET CLI
 ```shell
 dotnet tool install photo-cli -g
+```
+
+# Accessing Application
+
+Installing the application globally provides access to the `photo-cli` command in your terminal.
+```
+nugetpublishaction [command]
+
+nugetpublishaction help [command]
+```
+
+## Command Not Found Issue Solution
+
+For macOS and Linux You should add your `.dotnet/tools` (path may change for your installation choices) to your PATH environment variable.
+
+For macOS - Z Shell add the following line to your `~/.zshenv` file.
+```shell
+export PATH="$PATH:/Users/[your-account-name]/.dotnet/tools"
+```
+
+For Linux Bash add the following line to your `~/.profile` file.
+```shell
+export PATH="$PATH:/home/[your-account-name]/.dotnet/tools"
 ```

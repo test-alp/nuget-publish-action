@@ -48,9 +48,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-          body: |
-            https://nuget.org/packages/NugetPublishAction/${{env.VERSION}}
-            For macOS release refer https://github.com/test-alp/homebrew-nuget-publish-action
+          body_path: INSTALL.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
