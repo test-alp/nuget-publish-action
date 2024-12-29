@@ -8,7 +8,7 @@ You can install by Homebrew (preferred) or as .NET tool.
 
 #### Homebrew tap configuration & package installation
 ```shell
-brew tap photo-cli/homebrew-photo-cli && brew install photo-cli
+brew tap test-alp/homebrew-nuget-publish-action && brew install NugetPublishAction
 ```
 
 Ref: https://github.com/test-alp/homebrew-nuget-publish-action
@@ -19,16 +19,16 @@ You can install by .NET CLI (preferred) or standalone executable that can be fou
 
 # Install by .NET CLI
 
-.NET tool can be installed by .net cli (preferred), could be downloaded manually from https://nuget.org/packages/NugetPublishAction/${{env.VERSION}} or directly from assets.
+.NET tool can be installed by .net cli (preferred), could be downloaded manually from https://nuget.org/packages/NugetPublishAction/ or directly from assets.
 
 #### .NET CLI
 ```shell
-dotnet tool install photo-cli -g
+dotnet tool install NugetPublishAction -g
 ```
 
 # Accessing Application
 
-Installing the application globally provides access to the `photo-cli` command in your terminal.
+Installing the application globally provides access to the `nugetpublishaction` command in your terminal.
 
 ```
 nugetpublishaction [command]
