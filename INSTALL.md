@@ -4,26 +4,24 @@ This application can run on macOS, Windows & Linux for Arm64, x64, x86 architect
 
 # macOS
 
-You can install by Homebrew (preferred) or by [.net tool](#install-as-net-tool)
+You can install by Homebrew (preferred) or as .NET tool.
 
-Homebrew tap configuration & package installation
+#### 1. Homebrew tap configuration & package installation
 ```shell
 brew tap photo-cli/homebrew-photo-cli && brew install photo-cli
 ```
 
 Ref: https://github.com/test-alp/homebrew-nuget-publish-action
 
-## .NET tool (refer to following section)
-
 # Windows && Linux
 
-You can install by [.net tool](#install-as-net-tool) (preferred) or standalone executable that can be found on assets.
+You can install by .NET CLI (preferred) or standalone executable that can be found on assets.
 
-# Install as .NET tool
+# Install by .NET CLI
 
 .NET tool can be installed by .net cli (preferred), could be downloaded manually from https://nuget.org/packages/NugetPublishAction/${{env.VERSION}} or directly from assets.
 
-.NET CLI
+#### .NET CLI
 ```shell
 dotnet tool install photo-cli -g
 ```
@@ -31,6 +29,7 @@ dotnet tool install photo-cli -g
 # Accessing Application
 
 Installing the application globally provides access to the `photo-cli` command in your terminal.
+
 ```
 nugetpublishaction [command]
 
